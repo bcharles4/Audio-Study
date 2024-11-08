@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Audio Converter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/lesson.css') }}">
+</head>
+
+<body>
+    <div class="navbar">
+        <ul>
+            <div class="logo">
+                <img src="../static/img/ublogo.png" alt="University Logo">
+            </div>
+            <li><a href="/">Home</a></li>
+            <li><a href="/convert">Convert</a></li>
+            <li><a href="/lesson">Lessons</a></li>
+        </ul>
+    </div>
+
+    <!-- Centered Container for Books Grid -->
+    <div class="container">
+        <section class="books-grid">
+            <div class="book-card">
+                <a href="/laborlaw1">
+                    <img src="../static/img/book.jpg" alt="Book 1"></a>
+                <h3>Book Title 1</h3>
+                <p>Author 1</p>
+            </div>
+            <div class="book-card">
+                <img src="../static/img/book2.jpg" alt="Book 2">
+                <h3>Book Title 2</h3>
+                <p>Author 2</p>
+            </div>
+            <div class="book-card">
+                <img src="../static/img/book3.jpg" alt="Book 3">
+                <h3>Book Title 3</h3>
+                <p>Author 3</p>
+            </div>
+            <!-- Add more book-card divs as needed -->
+        </section>
+    </div>
+
+</body>
+
+</html>
