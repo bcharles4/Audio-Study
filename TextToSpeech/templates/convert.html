@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Audio Converter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body>
+    <div class="navbar">
+        <ul>
+            <div class="logo">
+                <img src="../static/img/ublogo.png" alt="University Logo">
+            </div>
+            <li><a href="/">Home</a></li>
+            <li><a href="/convert">Convert</a></li>
+            <li><a href="/lesson">Lessons</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <div class="con-file" id="fileC">
+            <div class="file-box">
+                <label for="fileInput">Upload or Drag files in here.....</label>
+            </div>
+
+            <form id="uploadForm" enctype="multipart/form-data">
+                <!-- Voice Selection Dropdown -->
+                <label for="voices">Choose a voice:</label>
+                <select id="voices" name="voice_id">
+                    <!-- Options will be populated dynamically -->
+                </select>
+
+                <!-- "UPLOAD" button that triggers the file input -->
+                <center>
+                    <button type="button" id="uploadBtn">UPLOAD</button>
+                    <input type="file" id="fileInput" name="file" accept=".txt, .pdf, .docx" required
+                        style="display: none;">
+                    <button type="submit" id="convertBtn">CONVERT TO AUDIO</button>
+                </center>
+            </form>
+
+            <!-- Display file name after upload -->
+            <p id="fileName" style="display: none;">SELECTED: <span id="fileDisplay"></span></p>
+
+            <!-- Progress Bar -->
+            <div id="progressContainer" style="display: none;">
+                <progress id="progressBar" value="0" max="100"></progress>
+                <span id="progressText">0%</span>
+            </div>
+
+            <div id="result" style="display: none;">
+                <h2>CONVERSION SUCCESSFUL!</h2>
+                <a id="downloadLink" href="#" download>Download Audio</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/TextPlugin.min.js"></script>
+
+    <script>
+        // Trigger file upload when the "UPLOAD" button is clicked
+        document.getElementById('uploadBtn').addEventListener('click', function () {
+            document.getElementById('fileInput').click();
+        });
+
+        // Display selected file name
+        document.getElementById('fileInput').addEventListener('change', function () {
+            const fileName = this.files[0].name;
+            document.getElementById('fileName').style.display = 'block';
+            document.getElementById('fileDisplay').textContent = fileName;
+        });
+
+        // Fetch available voices and populate the dropdown
+        fetch('/get_voices')
+            .then(response => response.json())
+            .then(data => {
+                const voiceSelect = document.getElementById('voices');
+                data.forEach(voice => {
+                    const option = document.createElement('option');
+                    option.value = voice.id;
+                    option.textContent = voice.name;
+                    voiceSelect.appendChild(option);
+                });
+            });
+
+        // Form submission handler for conversion
+        document.getElementById('uploadForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const formData = new FormData();
+            const fileInput = document.getElementById('fileInput');
+            const voiceSelect = document.getElementById('voices');
+
+            formData.append('file', fileInput.files[0]);
+            formData.append('voice_id', voiceSelect.value);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/upload', true);
+
+            // Handle progress
+            xhr.upload.onprogress = function (e) {
+                if (e.lengthComputable) {
+                    const percentComplete = (e.loaded / e.total) * 100;
+                    document.getElementById('progressContainer').style.display = 'block';
+                    document.getElementById('progressBar').value = percentComplete;
+                    document.getElementById('progressText').textContent = Math.floor(percentComplete) + '%';
+                }
+            };
+
+            // Handle conversion success
+            xhr.onload = function () {
+                if (this.status === 200) {
+                    document.getElementById('result').style.display = 'block';
+                    document.getElementById('downloadLink').href = window.URL.createObjectURL(new Blob([this.response], { type: 'audio/mp3' }));
+                }
+            };
+
+            xhr.responseType = 'blob'; // Expecting audio file as response
+            xhr.send(formData);
+        });
+    </script>
+</body>
+
+</html>
