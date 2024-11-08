@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lessons - Text-to-Speech</title>
+    <link rel="stylesheet" href="../static/css/styles2.css">
+</head>
+
+<body>
+    <div class="navbar">
+        <ul>
+            <div class="logo">
+                <img src="../static/img/ublogo.png" alt="University Logo">
+            </div>
+            <li><a href="/">Home</a></li>
+            <li><a href="/convert">Convert</a></li>
+            <li><a href="/lesson">Lessons</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h1>Chapter 1 - Labor Law</h1>
+        <p id="para1"><br>
+			-----------------------------------------------------------		-----------------------------------------------------------		------------------------------
+		<b>Case illustration: ST. LUKE'S MEDICAL CENTRE EMPLOYEE'S ASSOCIATION vs. NLRC (2007)</b><br><br>
+            <b>FACTS:</b> Maribel Santos worked as an X-Ray technician at St. Luke's Medical Centre. However, she does not possess a certificate of registration as required under the newly passed Radiologic Act or RA 7431. 
+			Specifically, Section 15 of this law provides that unless exempt from the examinations, no person shall practice or offer to practice as a radiologic and/or x-ray technologist in the Philippines without having obtained the proper certificate of registration from the Board. 
+			Due to her non-compliance and her failure to pass the exams pursuant to the afore-mentioned law, she was dismissed. She filed a case against St. Luke's for illegal dismissal.<br><br>
+			<b>ISSUE:</b> Whether or not the employee was validly dismissed. <br><br>
+			<b>RULING:</b> YES.
+        </p>
+
+        <p id="para2">
+			While the right of workers to security of tenure is guaranteed by the Constitution, its exercise may be reasonably regulated pursuant to the police power of the State to safeguard health, morals, peace, education, order, safety, and the general welfare of the people. 
+			Consequently, persons who desire to engage in the learned professions requiring scientific or technical knowledge may be required to take an examination as a prerequisite to engaging in their chosen careers. The most concrete example of this would be in the field of medicine, the practice of which in all its branches has been closely regulated by the State. 
+			It has long been recognized that the regulation of this field is a reasonable method of protecting the health and safety of the public to protect the public from the potentially deadly effects of incompetence and ignorance among those who would practice medicine.
+		</p>
+		   
+        <p id="para3">
+          While our laws endeavor to give life to the constitutional policy on social justice and the protection of labor, it does not mean that every labor dispute will be decided in favor of the workers. 
+		  The law also recognizes that management has rights which are also entitled to respect and enforcement in the interest of fair play. 
+		  Labor laws, to be sure, do not authorize interference with the employer's judgment in the conduct of the latter's business.
+        </p>
+		-----------------------------------------------------------		-----------------------------------------------------------		------------------------------
+		<p id="para4">
+          In other words, the labor law is not intended to favor labor alone, and cripplingly encumber capital in the process. 
+		  The goal is to establish a common thoroughfare that is fair and reasonable to both labor and capital. Ultimately, 
+		  the goal of Labor Laws is to strike a harmonious relation between labor and capital, as it is in such kinship that economic and social progress shall be best achieved. Therefore, the Constitution provides that "State shall regulate the relations between workers and employers, recognizing
+           the right of labor to its just share in the fruits or production and the right of enterprises to reasonable returns on investments, and to expansion and growth"." It is a shared responsibility aimed at a constitutional balance between protection to labor and prevent oppression to capital.
+        </p>
+		
+		<p id="para5">
+         And pursuant to this objective of creating a balanced and congenial liaison, any dispute between labor and capital arising from the terms and conditions of employment should, as far as possible, be resolved internally, 
+		 mutually and without intervention from the State or from other institutions. In this regard, the State "shall promote the principle of shared responsibility between workers and employers the preferential use of voluntary modes in settling disputes, 
+		 including conciliation, and shall foster their mutual compliance therewith to foster industrial peace". This is one of the main thrust of labor relations law, which shall be discussed further in later chapters.
+        </p>
+		
+        <!-- Dropdown for voice selection -->
+        <label for="voiceSelect">Choose Voice:</label>
+        <select id="voiceSelect"></select>
+         <br><br>
+        <button id="readBtn">Read Lesson Aloud</button>
+        <button id="pauseBtn" disabled>Pause</button>
+        <button id="stopBtn" disabled>Stop</button>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <a href="/laborlaw1">1</a> |
+            <a href="/laborlaw2">2</a> |
+			<a href="/laborlaw3">3</a> |
+			<a href="/laborlaw4">4</a> |
+			<a href="/laborlaw5">5</a> 
+        </div>
+    </div>
+
+    <script>
+        let speechSynthesisUtterance;
+        let voices = [];
+        let isPaused = false;
+
+        // Load available voices
+        function loadVoices() {
+            voices = window.speechSynthesis.getVoices();
+            voices.forEach((voice, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = voice.name;
+                document.getElementById('voiceSelect').appendChild(option);
+            });
+        }
+
+        // Read text with speech synthesis
+        function readText() {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();  // Cancel any ongoing speech
+            }
+
+            let selectedVoiceIndex = document.getElementById('voiceSelect').value;
+            let selectedVoice = voices[selectedVoiceIndex];
+            let paragraphs = [document.getElementById('para1'), document.getElementById('para2'), document.getElementById('para3'), document.getElementById('para4'), document.getElementById('para5')];
+            let textToRead = paragraphs.map(p => p.innerText).join(' ');
+
+            speechSynthesisUtterance = new SpeechSynthesisUtterance(textToRead);
+            speechSynthesisUtterance.voice = selectedVoice;
+
+            speechSynthesisUtterance.onend = function () {
+                document.getElementById('pauseBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = true;
+                document.getElementById('readBtn').disabled = false;
+            };
+
+            speechSynthesis.speak(speechSynthesisUtterance);
+            document.getElementById('readBtn').disabled = true;
+            document.getElementById('pauseBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = false;
+        }
+
+        // Pause/Resume speech synthesis
+        function togglePauseResume() {
+            if (!isPaused) {
+                speechSynthesis.pause();
+                document.getElementById('pauseBtn').textContent = 'Resume';
+            } else {
+                speechSynthesis.resume();
+                document.getElementById('pauseBtn').textContent = 'Pause';
+            }
+            isPaused = !isPaused;
+        }
+
+        // Stop speech synthesis completely
+        function stopSpeech() {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
+            document.getElementById('readBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('pauseBtn').textContent = 'Pause';
+            isPaused = false;
+        }
+
+        // Stop speech synthesis when navigating away or refreshing
+        window.addEventListener('beforeunload', function () {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
+        });
+
+        // Handle page load events
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.onvoiceschanged = loadVoices;
+            }
+            document.getElementById('readBtn').addEventListener('click', readText);
+            document.getElementById('pauseBtn').addEventListener('click', togglePauseResume);
+            document.getElementById('stopBtn').addEventListener('click', stopSpeech);
+        });
+    </script>
+</body>
+
+</html>
