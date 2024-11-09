@@ -51,17 +51,40 @@ def speak_text_to_file(text, audio_file, voice_id=None):
 def index():
     return render_template('index.html')
 
+# Route for convert  (Text-to-Speech)
+@app.route('/convert')
+def convert():
+    return render_template('convert.html')
 
-# Route for Lesson 1 (Text-to-Speech)
-@app.route('/lessons')
-def lessons():
-    return render_template('lessons.html')
+@app.route('/lesson')
+def lesson():
+    return render_template('lesson.html')
 
+# Route for page 1 labor law (Text-to-Speech)
+@app.route('/laborlaw1')
+def laborlaw1():
+    return render_template('laborlaw1.html')
 
 # Route for Lesson 2 (Speech-to-Text)
-@app.route('/lessons2')
-def lesson2():
-    return render_template('lessons2.html')
+@app.route('/laborlaw2')
+def laborlaw2():
+    return render_template('laborlaw2.html')
+
+@app.route('/laborlaw3')
+def laborlaw3():
+    return render_template('laborlaw3.html')
+
+@app.route('/laborlaw4')
+def laborlaw4():
+    return render_template('laborlaw4.html')
+
+@app.route('/laborlaw5')
+def laborlaw5():
+    return render_template('laborlaw5.html')
+
+@app.route('/laborlaw6')
+def laborlaw6():
+    return render_template('laborlaw6.html')
 
 
 # Get available voices (for selection on frontend)
