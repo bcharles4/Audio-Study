@@ -32,6 +32,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
+
+document.addEventListener('DOMContentLoaded', function() {
+  const tl = gsap.timeline();
+  tl.from (".head-con", {
+      x: -2300 ,
+      duration: 0.8,
+      opacity: 0,
+      
+  });
+});
+
 document.addEventListener("DOMContentLoaded", function () {
   const paragraphs = document.querySelectorAll("p");
   const readBtn = document.getElementById("readBtn");

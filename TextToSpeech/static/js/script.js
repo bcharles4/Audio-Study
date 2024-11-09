@@ -72,7 +72,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
-
+document.addEventListener('DOMContentLoaded', function() {
+    const tl = gsap.timeline();
+    tl.from (".head-con", {
+        y: -200,
+        duration: .7,
+        opacity: 0,
+        
+    });
+});
 
 
 
