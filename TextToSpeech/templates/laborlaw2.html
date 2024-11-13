@@ -20,6 +20,26 @@
         </ul>
     </div>
 
+    <div class="con-commands">
+        <div class="commands">
+            <div class="btn-read">
+                <button id="readBtn"><ion-icon name="book"></ion-icon></button>
+            </div>
+
+            <div class="btn-pause">
+                <button id="pauseBtn" disabled><ion-icon name="pause"></ion-icon></button>
+            </div>
+
+            <div class="btn-stop">
+                <button id="stopBtn" disabled><ion-icon name="stop"></ion-icon></button>
+            </div>
+
+            <div class="btn-command">
+                <button id="speech-command"><ion-icon name="logo-soundcloud"></ion-icon></button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="con-card">
         <h1>Chapter 1 - Labor Law</h1>
@@ -76,10 +96,8 @@
         <!-- Dropdown for voice selection -->
         <label for="voiceSelect">Choose Voice:</label>
         <select id="voiceSelect"></select>
-         <br><br>
-        <button id="readBtn">Read Lesson Aloud</button>
-        <button id="pauseBtn" disabled>Pause</button>
-        <button id="stopBtn" disabled>Stop</button>
+    
+       
 
         <!-- Navigation -->
         <div class="navigation">
@@ -174,7 +192,74 @@
             document.getElementById('pauseBtn').addEventListener('click', togglePauseResume);
             document.getElementById('stopBtn').addEventListener('click', stopSpeech);
         });
+
+
+        window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+let recognition;
+let recognizing = false;
+
+// Initialize speech recognition
+if (window.SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.lang = 'en-US';
+
+    // Toggle recognition on button click
+    document.getElementById('speech-command').addEventListener('click', function () {
+        if (recognizing) {
+            recognition.stop();
+            recognizing = false;
+            this.innerHTML = '<ion-icon name="logo-soundcloud"></ion-icon>'; // Reset icon
+        } else {
+            recognition.start();
+            recognizing = true;
+            this.innerHTML = '<ion-icon name="mic-off"></ion-icon>'; // Change icon to indicate active listening
+        }
+    });
+
+    // Handle recognized commands
+    recognition.onresult = function (event) {
+        const command = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+        console.log("Recognized command:", command);
+
+        // Function to speak a confirmation message and navigate afterward
+        function speakConfirmation(message, action) {
+            const confirmationMessage = new SpeechSynthesisUtterance(message);
+            confirmationMessage.onend = action; // Run action after confirmation is spoken
+            window.speechSynthesis.speak(confirmationMessage);
+        }
+
+        // Execute actions based on recognized commands
+        if (command.includes("next page")) {
+            speakConfirmation("Okay Master, Navigating to the next page.", () => window.location.href = '/laborlaw3'); // Adjust to your next page URL
+        } else if (command.includes("previous page")) {
+            speakConfirmation("Going to the previous page.", () => window.history.back());
+        } else if (command.includes("go to home")) {
+            speakConfirmation("Returning to home page.", () => window.location.href = '/');
+        } else if (command.includes("stop")) {
+            speakConfirmation("Stopping the audio.", () => document.getElementById('stopBtn').click());
+        } else if (command.includes("pause")) {
+            speakConfirmation("Pausing the audio.", () => document.getElementById('pauseBtn').click());
+        } else if (command.includes("read")) {
+            speakConfirmation("Reading aloud.", () => document.getElementById('readBtn').click());
+        }
+    };
+
+    recognition.onerror = function (event) {
+        console.error("Speech recognition error:", event.error);
+        recognizing = false;
+        document.getElementById('speech-command').innerHTML = '<ion-icon name="logo-soundcloud"></ion-icon>';
+    };
+} else {
+    alert("Your browser does not support Speech Recognition.");
+}
+
+
     </script>
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 
 </html>

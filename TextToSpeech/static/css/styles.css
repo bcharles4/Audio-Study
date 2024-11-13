@@ -20,6 +20,8 @@ body {
     height: auto;
     background-color: maroon;
 
+    text-transform: uppercase;
+
 }
 
 
@@ -98,7 +100,7 @@ body {
 
 .lpBtn button:hover {
     color: WHITE;
-    background-color: #333;
+    background-color: black;
     border: 3px solid white;
 }
 
@@ -108,6 +110,33 @@ body {
     width: 100%;
     height: 20%;
 }
+
+
+.floating-button {
+    position: fixed;
+    width: 4pc;
+    height: 4pc;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px;
+    font-size: 20px;
+    background-color: maroon;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .floating-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.4);
+    background-color: white;
+    color: maroon;
+    font-size: 25px;
+    transition: transform 0.2s ease
+  }
 
 
 

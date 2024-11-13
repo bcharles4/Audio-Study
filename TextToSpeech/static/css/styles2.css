@@ -7,7 +7,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: white;
+    background-color: whitesmoke;
     height: 100vh;
 
 
@@ -20,6 +20,8 @@ body {
     width: 100%;
     height: auto;
     background-color: maroon;
+
+    text-transform: uppercase;
 
 }
 
@@ -69,11 +71,31 @@ text-decoration: none;
     height: auto;
 }
 
+.con-commands {
+    position: fixed;
+    top: 50%; /* Vertically centered */
+    right: 0; /* Right aligned */
+    transform: translateY(-50%); /* Centers vertically */
+    width: 5%;
+    height: 30%;
+    background-color: transparent;
+
+    
+}
+
+.commands {
+    margin: 20px;
+}
+
+
+
+
 /* Container Styles */
 .container {
     width: 80%;
     height: 90vh;
     margin: 0 auto;
+    
 
 }
 
@@ -81,22 +103,25 @@ text-decoration: none;
     max-width: 800px;
     height: auto;
     margin: 50px auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 8px;
-    filter: drop-shadow(5px 5px 10px #999);
+    padding: 10px;
+    text-align: justify;
+    /* border-radius: 8px;
+    filter: drop-shadow(5px 5px 10px #999); */
 
 }
 
-h1 {
-    text-align: center;
-    color: #333;
+.con-card h1 {
+    text-align: left;
+    color: #444;
+    text-decoration: underline;
+    text-transform: uppercase;
+    margin-bottom: 20px;
 }
 
 p {
     line-height: 1.6;
     margin-bottom: 20px;
-    color: #555;
+    color: black;
 }
 
 /* Navigation Styles */
@@ -114,7 +139,7 @@ p {
 }
 
 .navigation a:hover {
-    color: #007bff;
+    color: maroon;
 }
 
 /* Button Style */
@@ -132,3 +157,25 @@ button {
     margin-right: auto;
 }
 
+
+#para1, #para2, #para3, #para4, #para5, #para6 {
+    
+  background-color: white;
+  padding: 20px;
+  filter: drop-shadow(10px 10px 3px #999);
+}
+
+#voiceSelect {
+    height: 2pc;
+    border-radius: 20px;
+    text-align: center;
+    background-color: maroon;
+    color: white;
+    font-weight: 600;
+}
+
+label {
+    text-transform: uppercase;
+    color: #333;
+    font-weight: 600;
+}
