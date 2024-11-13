@@ -28,7 +28,7 @@
 
             <form id="uploadForm" enctype="multipart/form-data">
                 <!-- Voice Selection Dropdown -->
-                <label for="voices">Choose a voice:</label>
+                <label for="voices" style="color: #333; font-weight: bold; font-size: 14px;">Choose a voice:</label>
                 <select id="voices" name="voice_id">
                     <!-- Options will be populated dynamically -->
                 </select>
@@ -36,10 +36,10 @@
                 <br><br>
                 <!-- "UPLOAD" button that triggers the file input -->
                 <center>
-                    <button type="button" id="uploadBtn">UPLOAD</button>
+                    <button type="button" id="uploadBtn">Upload</button>
                     <input type="file" id="fileInput" name="file" accept=".txt, .pdf, .docx" required
                         style="display: none;">
-                    <button type="submit" id="convertBtn">CONVERT TO AUDIO</button>
+                    <button type="submit" id="convertBtn">Convert to Audio</button>
                 </center>
             </form>
 
@@ -58,6 +58,8 @@
             </div>
         </div>
     </div>
+
+    <button class="floating-button" onclick="window.location.href='#fileC'"><ion-icon name="mic"></ion-icon></button>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
@@ -126,6 +128,9 @@
             xhr.send(formData);
         });
     </script>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 
 </html>
