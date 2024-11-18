@@ -4,9 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text to Audio Converter</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/lesson.css') }}">
-
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="../static/css/styles2.css">
 </head>
 
 <body>
@@ -17,60 +16,223 @@
             </div>
             <li><a href="/">Home</a></li>
             <li><a href="/convert">Convert</a></li>
-            <li><a href="/lesson">Lessons</a></li>
+            <li><a href="/book">Lessons</a></li>
         </ul>
     </div>
 
-    <!-- Centered Container for Books Grid -->
-    <div class="container">
-        <div class="head-con">
-            <h1> BOOKS </h1>
+    <div class="con-commands">
+        <div class="commands">
+            <div class="btn-read">
+                <button id="readBtn"><ion-icon name="book"></ion-icon></button>
+            </div>
+
+            <div class="btn-pause">
+                <button id="pauseBtn" disabled><ion-icon name="pause"></ion-icon></button>
+            </div>
+
+            <div class="btn-stop">
+                <button id="stopBtn" disabled><ion-icon name="stop"></ion-icon></button>
+            </div>
+
+            <div class="btn-command">
+                <button id="speech-command"><ion-icon name="mic"></ion-icon></button>
+            </div>
         </div>
-        
+    </div>
+
+    <div class="container">
         <div class="con-card">
-        <section class="books-grid">
-            <div class="book-card">
-                <a href="/laborlaw1">
-                    <img src="../static/img/book.jpg" alt="Book 1"></a>
-                <h3>Labor Laws and Legislation</h3>
-                <p>Atty. Alden Reuben B. Luna Ph.L.</p>
+            <h1>{{ title }}</h1>
+            {% for paragraph in content %}
+            <div class="paragraph-container">
+                <p>{{ paragraph }}</p>
             </div>
-            <!-- Add more book-card divs as needed -->
-        </section>
+            {% endfor %}
 
-        <section class="books-grid">
-            <div class="book-card">
-                <a href="/laborlaw1">
-                    <img src="../static/img/book.jpg" alt="Book 1"></a>
-                <h3>Labor Laws and Legislation</h3>
-                <p>Atty. Alden Reuben B. Luna Ph.L.</p>
+            <!-- Dropdown for voice selection -->
+            <label for="voiceSelect">Choose Voice:</label>
+            <select id="voiceSelect"></select>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <a href="/lesson/laborlaw1">1</a> |
+                <a href="/lesson/laborlaw2">2</a> |
+                <a href="/lesson/laborlaw3">3</a> |
+                <a href="/lesson/laborlaw4">4</a> |
+                <a href="/lesson/laborlaw5">5</a>
             </div>
-            <!-- Add more book-card divs as needed -->
-        </section>
-
-        <section class="books-grid">
-            <div class="book-card">
-                <a href="/laborlaw1">
-                    <img src="../static/img/book.jpg" alt="Book 1"></a>
-                <h3>Labor Laws and Legislation</h3>
-                <p>Atty. Alden Reuben B. Luna Ph.L.</p>
-            </div>
-            <!-- Add more book-card divs as needed -->
-        </section>
-
-    </div>
+        </div>
     </div>
 
-    <button class="floating-button" onclick="window.location.href='#fileC'"><ion-icon name="mic"></ion-icon></button>
+    <script>
+        let speechSynthesisUtterance;
+        let voices = [];
+        let isPaused = false;
 
-  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+        // Load available voices
+        function loadVoices() {
+            voices = window.speechSynthesis.getVoices();
+            const voiceSelect = document.getElementById('voiceSelect');
+            voices.forEach((voice, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = voice.name + (voice.default ? " (default)" : "");
+                voiceSelect.appendChild(option);
+            });
+        }
+
+        // Read text with speech synthesis
+        function readText() {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel(); // Stop ongoing speech before starting new
+            }
+
+            const selectedVoiceIndex = document.getElementById('voiceSelect').value;
+            const selectedVoice = voices[selectedVoiceIndex];
+            const paragraphs = document.querySelectorAll('p');
+            const textToRead = Array.from(paragraphs).map(p => p.innerText).join(' ');
+
+            speechSynthesisUtterance = new SpeechSynthesisUtterance(textToRead);
+            speechSynthesisUtterance.voice = selectedVoice;
+
+            speechSynthesisUtterance.onend = () => {
+                document.getElementById('pauseBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = true;
+                document.getElementById('readBtn').disabled = false;
+            };
+
+            speechSynthesis.speak(speechSynthesisUtterance);
+            document.getElementById('readBtn').disabled = true;
+            document.getElementById('pauseBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = false;
+        }
+
+        // Pause or resume speech synthesis
+        function togglePauseResume() {
+            if (!isPaused) {
+                speechSynthesis.pause();
+                document.getElementById('pauseBtn').innerHTML = '<ion-icon name="play"></ion-icon>';
+            } else {
+                speechSynthesis.resume();
+                document.getElementById('pauseBtn').innerHTML = '<ion-icon name="pause"></ion-icon>';
+            }
+            isPaused = !isPaused;
+        }
+
+        // Stop speech synthesis
+        function stopSpeech() {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
+            document.getElementById('readBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('pauseBtn').innerHTML = '<ion-icon name="play"></ion-icon>';
+            isPaused = false;
+        }
+
+        // Speech recognition commands
+        function initializeSpeechRecognition() {
+            if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+                alert("Your browser does not support Speech Recognition.");
+                return;
+            }
+
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.continuous = true;
+            recognition.lang = 'en-US';
+
+            let recognizing = false;
+
+            document.getElementById('speech-command').addEventListener('click', () => {
+                if (recognizing) {
+                    recognition.stop();
+                    recognizing = false;
+                    document.getElementById('speech-command').innerHTML = '<ion-icon name="mic"></ion-icon>';
+                } else {
+                    recognition.start();
+                    recognizing = true;
+                    document.getElementById('speech-command').innerHTML = '<ion-icon name="mic-off"></ion-icon>';
+                }
+            });
+
+            recognition.onresult = (event) => {
+                const command = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+                console.log("Recognized command:", command);
+
+                function speakAndExecute(message, action) {
+                    const confirmation = new SpeechSynthesisUtterance(message);
+                    confirmation.onend = action;
+                    window.speechSynthesis.speak(confirmation);
+                }
+
+                if (command.includes("next page")) {
+                    const currentUrl = window.location.href;
+                    const match = currentUrl.match(/lesson\/laborlaw(\d+)/);
+                    if (match) {
+                        const currentPage = parseInt(match[1], 10);
+                        const nextPage = currentPage + 1;
+                        const nextUrl = `/lesson/laborlaw${nextPage}`;
+                        speakAndExecute("Navigating to the next page.", () => window.location.href = nextUrl);
+                    } else {
+                        speakAndExecute("Could not determine the next page.", null);
+                    }
+                } else if (command.includes("previous page")) {
+                    const currentUrl = window.location.href;
+                    const match = currentUrl.match(/lesson\/laborlaw(\d+)/);
+                    if (match) {
+                        const currentPage = parseInt(match[1], 10);
+                        if (currentPage > 1) {
+                            const previousPage = currentPage - 1;
+                            const prevUrl = `/lesson/laborlaw${previousPage}`;
+                            speakAndExecute("Going to the previous page.", () => window.location.href = prevUrl);
+                        } else {
+                            speakAndExecute("You are already on the first page.", null);
+                        }
+                    } else {
+                        speakAndExecute("Could not determine the previous page.", null);
+                    }
+                } else if (command.includes("go to home")) {
+                    speakAndExecute("Returning to home page.", () => window.location.href = '/');
+                } else if (command.includes("stop")) {
+                    speakAndExecute("Stopping the audio.", () => stopSpeech());
+                } else if (command.includes("pause")) {
+                    speakAndExecute("Pausing the audio.", () => togglePauseResume());
+                } else if (command.includes("read")) {
+                    speakAndExecute("Reading aloud.", () => readText());
+                }
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech recognition error:", event.error);
+                recognizing = false;
+                document.getElementById('speech-command').innerHTML = '<ion-icon name="mic"></ion-icon>';
+            };
+        }
+
+        // Handle page load
+        document.addEventListener('DOMContentLoaded', () => {
+            if ('speechSynthesis' in window) {
+                speechSynthesis.onvoiceschanged = loadVoices;
+                loadVoices();
+            }
+            document.getElementById('readBtn').addEventListener('click', readText);
+            document.getElementById('pauseBtn').addEventListener('click', togglePauseResume);
+            document.getElementById('stopBtn').addEventListener('click', stopSpeech);
+            initializeSpeechRecognition();
+        });
+
+        // Cancel speech synthesis on page unload
+        window.addEventListener('beforeunload', () => {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
+        });
+    </script>
 
 
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/TextPlugin.min.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 
 </html>
