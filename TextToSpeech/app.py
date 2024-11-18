@@ -3,6 +3,7 @@ import pyttsx3
 from flask import Flask, request, render_template, send_file, jsonify, abort
 from PyPDF2 import PdfReader
 from docx import Document
+from lessons import get_lesson
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -56,36 +57,16 @@ def index():
 def convert():
     return render_template('convert.html')
 
-@app.route('/lesson')
-def lesson():
-    return render_template('lesson.html')
+@app.route('/book')
+def book():
+    return render_template('book.html')
 
-# Route for page 1 labor law (Text-to-Speech)
-@app.route('/laborlaw1')
-def laborlaw1():
-    return render_template('laborlaw1.html')
-
-# Route for Lesson 2 (Speech-to-Text)
-@app.route('/laborlaw2')
-def laborlaw2():
-    return render_template('laborlaw2.html')
-
-@app.route('/laborlaw3')
-def laborlaw3():
-    return render_template('laborlaw3.html')
-
-@app.route('/laborlaw4')
-def laborlaw4():
-    return render_template('laborlaw4.html')
-
-@app.route('/laborlaw5')
-def laborlaw5():
-    return render_template('laborlaw5.html')
-
-@app.route('/laborlaw6')
-def laborlaw6():
-    return render_template('laborlaw6.html')
-
+@app.route('/lesson/<chapter>')
+def lesson(chapter):
+    lesson_data = get_lesson(chapter)  # Use the function to fetch lesson content
+    if lesson_data:
+        return render_template('lesson.html', title=lesson_data['title'], content=lesson_data['content'])
+    return "Chapter not found", 404
 
 # Get available voices (for selection on frontend)
 @app.route('/get_voices', methods=['GET'])
