@@ -42,8 +42,8 @@ body {
 }
 
 .navbar li a {
-color: white;
-text-decoration: none;
+    color: white;
+    text-decoration: none;
 }
 
 
@@ -51,9 +51,10 @@ text-decoration: none;
     font-size: 40px;
     transform: translateY(-5px);
     filter: drop-shadow(10px 10px 2px #999);
-    font-size:20px;
-    
+    font-size: 20px;
+
 }
+
 .logo {
     width: 20%;
     height: 3vh;
@@ -73,14 +74,17 @@ text-decoration: none;
 
 .con-commands {
     position: fixed;
-    top: 50%; /* Vertically centered */
-    right: 0; /* Right aligned */
-    transform: translateY(-50%); /* Centers vertically */
+    top: 50%;
+    /* Vertically centered */
+    right: 0;
+    /* Right aligned */
+    transform: translateY(-50%);
+    /* Centers vertically */
     width: 5%;
     height: 30%;
     background-color: transparent;
 
-    
+
 }
 
 .commands {
@@ -95,7 +99,7 @@ text-decoration: none;
     width: 80%;
     height: 90vh;
     margin: 0 auto;
-    
+
 
 }
 
@@ -158,11 +162,16 @@ button {
 }
 
 
-#para1, #para2, #para3, #para4, #para5, #para6 {
-    
-  background-color: white;
-  padding: 20px;
-  filter: drop-shadow(10px 10px 3px #999);
+#para1,
+#para2,
+#para3,
+#para4,
+#para5,
+#para6 {
+
+    background-color: white;
+    padding: 20px;
+    filter: drop-shadow(10px 10px 3px #999);
 }
 
 #voiceSelect {
@@ -178,4 +187,17 @@ label {
     text-transform: uppercase;
     color: #333;
     font-weight: 600;
+}
+
+.paragraph-container {
+    margin-bottom: 15px;
+    /* Add spacing between paragraph containers */
+    padding: 10px;
+    /* Add padding inside the container */
+    border: 1px solid #ddd;
+    /* Optional border for visual distinction */
+    border-radius: 5px;
+    /* Rounded corners */
+    background-color: #f9f9f9;
+    /* Light background color */
 }
